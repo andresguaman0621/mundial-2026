@@ -19,6 +19,33 @@ function bySort(a, b) {
 
 const active = computed(() => enriched.value.filter(p => p.active).sort(bySort));
 const eliminated = computed(() => enriched.value.filter(p => !p.active).sort(bySort));
+
+// Agrupa participantes por selección elegida: cuántas personas escogieron cada
+// país, cuántas siguen en concurso y quiénes son. Ordena por cantidad desc.
+const byTeam = computed(() => {
+  const map = new Map();
+  for (const p of participantsState.participants) {
+    const team = getTeamById(tournament.teams, p.teamId);
+    const key = team ? team.id : p.teamId;
+    const ps = getParticipantStatus(tournament.teamStatus, p);
+    if (!map.has(key)) {
+      map.set(key, {
+        key,
+        name: team ? getTeamName(team.name_en) : getTeamName(p.teamName),
+        flag: team?.flag || '',
+        count: 0, active: 0, points: 0, names: []
+      });
+    }
+    const e = map.get(key);
+    e.count++;
+    if (ps.active) e.active++;
+    e.points += p.points;
+    e.names.push(p.name);
+  }
+  return [...map.values()].sort((a, b) =>
+    b.count - a.count || b.points - a.points || a.name.localeCompare(b.name)
+  );
+});
 </script>
 
 <template>
@@ -68,6 +95,31 @@ const eliminated = computed(() => enriched.value.filter(p => !p.active).sort(byS
             <p>Nadie eliminado todavía.<br>¡Todos siguen en la pelea!</p>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <div class="card-title">📋 Personas por selección <span class="count">{{ byTeam.length }}</span></div>
+      <div v-if="byTeam.length" class="tally-grid">
+        <div v-for="t in byTeam" :key="t.key" class="tally-item">
+          <img v-if="t.flag" :src="t.flag" class="tally-flag" alt="">
+          <span v-else class="tally-flag placeholder">?</span>
+          <div class="tally-info">
+            <div class="tally-head">
+              <span class="tally-name">{{ t.name }}</span>
+              <span class="tally-badge">{{ t.count }} {{ t.count === 1 ? 'persona' : 'personas' }}</span>
+            </div>
+            <div class="tally-sub">
+              <span class="tally-active">🔥 {{ t.active }} en concurso</span> ·
+              <span>{{ t.points }} pts</span>
+            </div>
+            <div class="tally-names">{{ t.names.join(', ') }}</div>
+          </div>
+        </div>
+      </div>
+      <div v-else class="empty-state">
+        <div class="icon">📋</div>
+        <p>Aún no hay participantes registrados.</p>
       </div>
     </div>
   </section>

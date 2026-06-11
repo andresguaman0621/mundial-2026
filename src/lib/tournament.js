@@ -64,6 +64,16 @@ export function isPlaceholderTeam(name) {
   return !name || /^[WL]\d+/.test(name);
 }
 
+// Normaliza para búsquedas: sin tildes/diacríticos, en minúsculas. Así "méxico",
+// "Mexico" y "MÉXICO" hacen match por igual.
+export function normalizeText(str) {
+  return String(str || '')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
 export function parseScore(score) {
   if (!score) return ['0', '0'];
   const parts = String(score).split(/[-:–]/).map(s => s.trim());
@@ -86,6 +96,22 @@ export function mapWcupStatus(status, liveMinute) {
   return { finished: 'FALSE', time_elapsed: 'notstarted' };
 }
 
+// La API trae `time` como texto en árabe y en huso UTC+4; en cambio `datetime`
+// es un timestamp Unix (UTC) confiable. Formateamos ese timestamp a la hora de
+// Ecuador (America/Guayaquil, UTC-5 fijo) → "YYYY-MM-DD HH:mm".
+export function formatEcuador(unixSeconds) {
+  if (!unixSeconds) return '';
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Guayaquil',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false
+  }).formatToParts(new Date(unixSeconds * 1000));
+  const p = {};
+  for (const x of parts) p[x.type] = x.value;
+  const hour = p.hour === '24' ? '00' : p.hour; // algunos entornos devuelven 24 a medianoche
+  return `${p.year}-${p.month}-${p.day} ${hour}:${p.minute}`;
+}
+
 export function convertMatch(m) {
   const homeCanon = canonicalTeam(m.team1);
   const awayCanon = canonicalTeam(m.team2);
@@ -102,7 +128,7 @@ export function convertMatch(m) {
     type,
     finished: st.finished,
     time_elapsed: st.time_elapsed,
-    local_date: `${m.date || ''} ${m.time || ''}`.trim(),
+    local_date: formatEcuador(m.datetime) || `${m.date || ''} ${m.time || ''}`.trim(),
     home_team_name_en: isPlaceholderTeam(m.team1) ? null : homeCanon,
     away_team_name_en: isPlaceholderTeam(m.team2) ? null : awayCanon,
     home_team_label: isPlaceholderTeam(m.team1) ? m.team1 : null,

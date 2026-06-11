@@ -47,7 +47,7 @@ onMounted(() => {
     <RankingsTab v-if="activeTab === 'rankings'" />
     <GroupsTab v-if="activeTab === 'groups'" />
 
-    <footer>Datos en tiempo real vía <a href="https://wcup2026.org" target="_blank" style="color:var(--gold)">wcup2026.org API</a> · Actualización automática cada 30s</footer>
+    <footer>Datos en tiempo real vía <a href="https://wcup2026.org" target="_blank" style="color:var(--gold)">wcup2026.org API</a></footer>
   </div>
 
   <AdminModal :open="adminOpen" @close="adminOpen = false" />
