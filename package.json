@@ -1,0 +1,19 @@
+{
+  "name": "polla-mundial-2026",
+  "version": "1.0.0",
+  "description": "Polla Mundial 2026 - betting pool con Vue 3 + Turso",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.14.0",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "vite": "^6.0.7"
+  }
+}

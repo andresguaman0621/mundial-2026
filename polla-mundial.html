@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polla Mundial 2026 ⚽</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --bg2: #111827;
+      --card: rgba(17, 24, 39, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --gold: #f5c518;
+      --gold2: #e8a317;
+      --green: #22c55e;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --purple: #a855f7;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --live: #ff3b3b;
+      --radius: 16px;
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(245,197,24,0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 100% 50%, rgba(59,130,246,0.08), transparent),
+        radial-gradient(ellipse 60% 40% at 0% 80%, rgba(34,197,94,0.06), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .pitch-pattern {
+      position: fixed;
+      inset: 0;
+      opacity: 0.03;
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 49px, #fff 49px, #fff 50px),
+        repeating-linear-gradient(90deg, transparent, transparent 49px, #fff 49px, #fff 50px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+    /* Header */
+    header {
+      padding: 28px 0 20px;
+      text-align: center;
+      position: relative;
+    }
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      letter-spacing: 4px;
+      background: linear-gradient(135deg, var(--gold), #fff8dc, var(--gold2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-top: 6px; }
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,59,59,0.15);
+      border: 1px solid rgba(255,59,59,0.4);
+      color: var(--live);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+    .live-dot {
+      width: 8px; height: 8px;
+      background: var(--live);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+
+    /* Nav tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 24px 0;
+      padding: 6px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 14px;
+      border: 1px solid var(--card-border);
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .tab-btn {
+      padding: 10px 22px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: #0a0e1a;
+      box-shadow: 0 4px 15px rgba(245,197,24,0.3);
+    }
+    .admin-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--card-border);
+      color: var(--muted);
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+      backdrop-filter: blur(10px);
+    }
+    .admin-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+    /* Sections */
+    .section { display: none; animation: fadeIn 0.4s ease; }
+    .section.active { display: block; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media(max-width:900px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* Cards */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+    }
+    .card-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      color: var(--gold);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-title .count {
+      background: rgba(245,197,24,0.15);
+      color: var(--gold);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0;
+    }
+
+    /* Match cards */
+    .matches-grid { display: grid; gap: 12px; }
+    .match-card {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      border: 1px solid transparent;
+      transition: all 0.25s;
+    }
+    .match-card:hover { border-color: var(--card-border); background: rgba(255,255,255,0.05); }
+    .match-card.live {
+      border-color: rgba(255,59,59,0.4);
+      background: rgba(255,59,59,0.06);
+      animation: liveGlow 2s infinite;
+    }
+    @keyframes liveGlow { 0%,100%{box-shadow:0 0 0 0 rgba(255,59,59,0)} 50%{box-shadow:0 0 20px rgba(255,59,59,0.15)} }
+    .match-card.finished { opacity: 0.75; }
+    .team-side { display: flex; align-items: center; gap: 10px; }
+    .team-side.away { flex-direction: row-reverse; text-align: right; }
+    .team-flag { width: 32px; height: 22px; object-fit: cover; border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+    .team-name { font-weight: 600; font-size: 0.9rem; }
+    .match-center { text-align: center; min-width: 80px; }
+    .match-score {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      color: var(--gold);
+    }
+    .match-status {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 2px;
+    }
+    .match-status.live { color: var(--live); }
+    .match-status.finished { color: var(--muted); }
+    .match-status.scheduled { color: var(--blue); }
+    .match-meta { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+    .phase-filter {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .phase-chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .phase-chip.active, .phase-chip:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(245,197,24,0.1);
+    }
+
+    /* Rankings */
+    .rank-list { display: flex; flex-direction: column; gap: 10px; }
+    .rank-item {
+      display: grid;
+      grid-template-columns: 40px 1fr auto auto;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .rank-item:hover { background: rgba(255,255,255,0.06); }
+    .rank-item.top1 { border-left-color: var(--gold); background: rgba(245,197,24,0.08); }
+    .rank-item.top2 { border-left-color: #c0c0c0; }
+    .rank-item.top3 { border-left-color: #cd7f32; }
+    .rank-pos {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    .rank-info .name { font-weight: 700; font-size: 1rem; }
+    .rank-info .team { font-size: 0.8rem; color: var(--muted); display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+    .rank-info .team img { width: 20px; height: 14px; border-radius: 2px; }
+    .rank-stage {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(34,197,94,0.15);
+      color: var(--green);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .rank-stage.eliminated { background: rgba(239,68,68,0.15); color: var(--red); }
+    .rank-points {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      color: var(--gold);
+      min-width: 50px;
+      text-align: right;
+    }
+    .rank-points small { font-family: 'Outfit', sans-serif; font-size: 0.65rem; color: var(--muted); display: block; }
+
+    /* Groups */
+    .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    .group-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+    }
+    .group-header {
+      background: linear-gradient(135deg, rgba(245,197,24,0.2), rgba(245,197,24,0.05));
+      padding: 10px 14px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      color: var(--gold);
+    }
+    .group-row {
+      display: grid;
+      grid-template-columns: 24px 1fr 28px 28px 28px 32px;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .group-row:last-child { border-bottom: none; }
+    .group-row.qualified { background: rgba(34,197,94,0.08); }
+    .group-row.header { color: var(--muted); font-weight: 600; font-size: 0.68rem; text-transform: uppercase; }
+
+    /* Admin modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 32px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+      animation: modalIn 0.3s ease;
+    }
+    @keyframes modalIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:scale(1)} }
+    .modal h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    .form-group select option { background: var(--bg2); }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: #0a0e1a;
+      width: 100%;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245,197,24,0.35); }
+    .btn-danger {
+      background: rgba(239,68,68,0.15);
+      color: var(--red);
+      border: 1px solid rgba(239,68,68,0.3);
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+    .btn-danger:hover { background: rgba(239,68,68,0.25); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--card-border);
+    }
+    .btn-ghost:hover { color: var(--text); }
+    .admin-participant {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+    .admin-participant .info { flex: 1; }
+    .admin-participant .info .pname { font-weight: 600; }
+    .admin-participant .info .pteam { font-size: 0.8rem; color: var(--muted); }
+    .close-modal {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .close-modal:hover { color: var(--text); }
+    .modal { position: relative; }
+    .error-msg { color: var(--red); font-size: 0.85rem; margin-top: 8px; }
+    .success-msg { color: var(--green); font-size: 0.85rem; margin-top: 8px; }
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+    .sync-info {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin: 16px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .sync-info .spin { animation: spin 1s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat-box {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-box .val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-box .lbl { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+    .hidden { display: none !important; }
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="pitch-pattern"></div>
+  <button class="admin-btn" onclick="openAdmin()">⚙️ Admin</button>
+
+  <div class="container">
+    <header>
+      <div class="logo">POLLA MUNDIAL 2026</div>
+      <p class="subtitle">Apuesta por tu selección · El que más lejos llegue gana los puntos</p>
+      <div class="live-badge" id="liveIndicator" style="display:none">
+        <span class="live-dot"></span>
+        <span id="liveCount">0 partidos en vivo</span>
+      </div>
+    </header>
+
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-box"><div class="val" id="statActive">0</div><div class="lbl">En concurso</div></div>
+      <div class="stat-box"><div class="val" id="statEliminated">0</div><div class="lbl">Eliminados</div></div>
+      <div class="stat-box"><div class="val" id="statPoints">0</div><div class="lbl">Puntos en juego</div></div>
+      <div class="stat-box"><div class="val" id="statLive">0</div><div class="lbl">Partidos en vivo</div></div>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-tab="matches">⚽ Partidos</button>
+      <button class="tab-btn" data-tab="rankings">🏆 Rankings</button>
+      <button class="tab-btn" data-tab="groups">📊 Grupos</button>
+    </nav>
+
+    <div class="sync-info" id="syncInfo">
+      <span>🔄</span> Conectando con API del Mundial...
+    </div>
+
+    <!-- PARTIDOS -->
+    <section class="section active" id="tab-matches">
+      <div class="card">
+        <div class="card-title">Partidos del Mundial</div>
+        <div class="phase-filter" id="phaseFilter"></div>
+        <div class="matches-grid" id="matchesList"></div>
+      </div>
+    </section>
+
+    <!-- RANKINGS -->
+    <section class="section" id="tab-rankings">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🔥 En Concurso <span class="count" id="activeCount">0</span></div>
+          <div class="rank-list" id="activeRanking"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">💀 Eliminados <span class="count" id="eliminatedCount">0</span></div>
+          <div class="rank-list" id="eliminatedRanking"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GRUPOS -->
+    <section class="section" id="tab-groups">
+      <div class="card">
+        <div class="card-title">Tabla de Grupos</div>
+        <div class="groups-grid" id="groupsGrid"></div>
+      </div>
+    </section>
+
+    <footer>Datos en tiempo real vía <a href="https://wcup2026.org" target="_blank" style="color:var(--gold)">wcup2026.org API</a> · Actualización automática cada 30s</footer>
+  </div>
+
+  <!-- ADMIN MODAL -->
+  <div class="modal-overlay" id="adminModal">
+    <div class="modal">
+      <button class="close-modal" onclick="closeAdmin()">×</button>
+      <div id="loginView">
+        <h2>🔐 Acceso Admin</h2>
+        <div class="form-group">
+          <label>Usuario</label>
+          <input type="text" id="loginUser" placeholder="admin" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="btn btn-primary" onclick="doLogin()">Ingresar</button>
+        <p class="error-msg hidden" id="loginError"></p>
+        <p style="font-size:0.75rem;color:var(--muted);margin-top:12px">Default: admin / mundial2026</p>
+      </div>
+      <div id="adminView" class="hidden">
+        <h2>⚙️ Panel Admin</h2>
+        <div class="form-group">
+          <label>Nombre del participante</label>
+          <input type="text" id="pName" placeholder="Ej: Jorge Cajamarca">
+        </div>
+        <div class="form-group">
+          <label>País / Selección</label>
+          <select id="pTeam"></select>
+        </div>
+        <div class="form-group">
+          <label>Puntos apostados</label>
+          <input type="number" id="pPoints" min="1" value="5" placeholder="5">
+        </div>
+        <button class="btn btn-primary" onclick="addParticipant()">➕ Agregar Participante</button>
+        <p class="success-msg hidden" id="addSuccess"></p>
+        <hr style="border:none;border-top:1px solid var(--card-border);margin:20px 0">
+        <div class="card-title" style="font-size:1.2rem">Participantes registrados</div>
+        <div id="adminList"></div>
+        <hr style="border:none;border-top:1px solid var(--card-border);margin:20px 0">
+        <button class="btn btn-ghost" style="width:100%" onclick="doLogout()">Cerrar sesión</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ═══════════════════════════════════════════
+// CONFIGURACIÓN Y ESTADO
+// ═══════════════════════════════════════════
+const API_BASE = 'https://wcup2026.org/api/data.php';
+const REFRESH_MS = 30000;
+const STORAGE_KEY = 'polla_mundial_data';
+const CACHE_KEY = 'polla_mundial_cache';
+const DEFAULT_ADMIN = { user: 'admin', pass: 'mundial2026' };
+
+const TEAM_ALIASES = {
+  'USA': 'United States',
+  'Bosnia & Herzegovina': 'Bosnia and Herzegovina',
+  'DR Congo': 'Democratic Republic of the Congo'
+};
+
+const TEAM_ES = {
+  'Mexico':'México','United States':'Estados Unidos','South Korea':'Corea del Sur',
+  'South Africa':'Sudáfrica','Czech Republic':'Rep. Checa','Canada':'Canadá',
+  'Bosnia and Herzegovina':'Bosnia','Qatar':'Catar','Switzerland':'Suiza',
+  'Brazil':'Brasil','Morocco':'Marruecos','Haiti':'Haití','Scotland':'Escocia',
+  'Paraguay':'Paraguay','Australia':'Australia','Turkey':'Turquía',
+  'Germany':'Alemania','Curaçao':'Curazao','Ivory Coast':'Costa de Marfil',
+  'Ecuador':'Ecuador','Netherlands':'Países Bajos','Japan':'Japón',
+  'Sweden':'Suecia','Tunisia':'Túnez','Belgium':'Bélgica','Egypt':'Egipto',
+  'Iran':'Irán','New Zealand':'Nueva Zelanda','Spain':'España',
+  'Cape Verde':'Cabo Verde','Saudi Arabia':'Arabia Saudita','Uruguay':'Uruguay',
+  'France':'Francia','Senegal':'Senegal','Iraq':'Irak','Norway':'Noruega',
+  'Argentina':'Argentina','Algeria':'Argelia','Austria':'Austria','Jordan':'Jordania',
+  'Portugal':'Portugal','Democratic Republic of the Congo':'RD Congo',
+  'Uzbekistan':'Uzbekistán','Colombia':'Colombia','England':'Inglaterra',
+  'Croatia':'Croacia','Ghana':'Ghana','Panama':'Panamá'
+};
+
+const STAGE_ORDER = { group:0, r32:1, r16:2, qf:3, sf:4, third:5, final:6 };
+const STAGE_LABELS = {
+  group:'Fase de Grupos', r32:'Dieciseisavos', r16:'Octavos de Final',
+  qf:'Cuartos de Final', sf:'Semifinal', third:'Tercer Puesto',
+  final:'Final', champion:'🏆 Campeón', eliminated:'Eliminado'
+};
+
+const PHASES = [
+  { id:'all', label:'Todos' },
+  { id:'group', label:'Grupos' },
+  { id:'r32', label:'Dieciseisavos' },
+  { id:'r16', label:'Octavos' },
+  { id:'qf', label:'Cuartos' },
+  { id:'sf', label:'Semifinal' },
+  { id:'final', label:'Final' }
+];
+
+let state = {
+  teams: [],
+  games: [],
+  groups: [],
+  participants: [],
+  admin: { ...DEFAULT_ADMIN },
+  activePhase: 'all',
+  isAdmin: false,
+  lastSync: null,
+  teamStatus: {} // teamId -> { active, stage, eliminated }
+};
+
+// ═══════════════════════════════════════════
+// PERSISTENCIA
+// ═══════════════════════════════════════════
+function loadData() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const data = JSON.parse(saved);
+      state.participants = data.participants || [];
+      if (data.admin) state.admin = data.admin;
+    }
+  } catch(e) { console.warn('Error loading data', e); }
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    participants: state.participants,
+    admin: state.admin
+  }));
+}
+
+// ═══════════════════════════════════════════
+// API (wcup2026.org — compatible con navegador, CORS habilitado)
+// ═══════════════════════════════════════════
+function canonicalTeam(name) {
+  if (!name || /^[WL]\d+/.test(name)) return name;
+  return TEAM_ALIASES[name] || name;
+}
+
+function teamSlug(name) {
+  return canonicalTeam(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+function isPlaceholderTeam(name) {
+  return !name || /^[WL]\d+/.test(name);
+}
+
+function parseScore(score) {
+  if (!score) return ['0', '0'];
+  const parts = String(score).split(/[-:–]/).map(s => s.trim());
+  return [parts[0] || '0', parts[1] || '0'];
+}
+
+function mapRound(round) {
+  if (!round || round.startsWith('Matchday')) return 'group';
+  const map = {
+    'Round of 32': 'r32', 'Round of 16': 'r16', 'Quarter-final': 'qf',
+    'Semi-final': 'sf', 'Match for third place': 'third', 'Final': 'final'
+  };
+  return map[round] || 'group';
+}
+
+function mapWcupStatus(status, liveMinute) {
+  if (status === 'finished') return { finished: 'TRUE', time_elapsed: 'finished' };
+  if (status === 'halftime') return { finished: 'FALSE', time_elapsed: 'ht' };
+  if (status === 'live') return { finished: 'FALSE', time_elapsed: liveMinute ? `live ${liveMinute}` : 'live' };
+  return { finished: 'FALSE', time_elapsed: 'notstarted' };
+}
+
+function convertMatch(m) {
+  const homeCanon = canonicalTeam(m.team1);
+  const awayCanon = canonicalTeam(m.team2);
+  const scores = parseScore(m.score);
+  const st = mapWcupStatus(m.status, m.live_minute);
+  const type = mapRound(m.round);
+  return {
+    id: String(m.id),
+    home_team_id: isPlaceholderTeam(m.team1) ? '0' : teamSlug(homeCanon),
+    away_team_id: isPlaceholderTeam(m.team2) ? '0' : teamSlug(awayCanon),
+    home_score: scores[0],
+    away_score: scores[1],
+    group: (m.group || '').replace('Group ', '') || (type !== 'group' ? type.toUpperCase() : ''),
+    type,
+    finished: st.finished,
+    time_elapsed: st.time_elapsed,
+    local_date: `${m.date || ''} ${m.time || ''}`.trim(),
+    home_team_name_en: isPlaceholderTeam(m.team1) ? null : homeCanon,
+    away_team_name_en: isPlaceholderTeam(m.team2) ? null : awayCanon,
+    home_team_label: isPlaceholderTeam(m.team1) ? m.team1 : null,
+    away_team_label: isPlaceholderTeam(m.team2) ? m.team2 : null,
+    _datetime: m.datetime || 0
+  };
+}
+
+function buildTeamsFromData(matches, standings) {
+  const flagMap = {};
+  matches.forEach(m => {
+    if (m.flag1 && !isPlaceholderTeam(m.team1)) flagMap[canonicalTeam(m.team1)] = m.flag1;
+    if (m.flag2 && !isPlaceholderTeam(m.team2)) flagMap[canonicalTeam(m.team2)] = m.flag2;
+  });
+  const teams = [];
+  Object.entries(standings || {}).forEach(([groupName, groupTeams]) => {
+    const groupLetter = groupName.replace('Group ', '');
+    groupTeams.forEach(t => {
+      const name = canonicalTeam(t.team);
+      const id = teamSlug(name);
+      if (!teams.find(x => x.id === id)) {
+        teams.push({ id, name_en: name, flag: flagMap[name] || '', groups: groupLetter });
+      }
+    });
+  });
+  return teams.sort((a, b) => getTeamName(a.name_en).localeCompare(getTeamName(b.name_en)));
+}
+
+function buildGroupsFromStandings(standings) {
+  return Object.entries(standings || {}).map(([groupName, groupTeams]) => ({
+    name: groupName.replace('Group ', ''),
+    teams: groupTeams.map(t => ({
+      team_id: teamSlug(canonicalTeam(t.team)),
+      mp: String(t.p ?? 0), w: String(t.w ?? 0), l: String(t.l ?? 0),
+      d: String(t.d ?? 0), pts: String(t.pts ?? 0),
+      gf: String(t.gf ?? 0), ga: String(t.ga ?? 0), gd: String(t.gd ?? 0)
+    }))
+  }));
+}
+
+async function fetchWcup(action) {
+  const res = await fetch(`${API_BASE}?action=${action}`);
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  const data = await res.json();
+  if (!data.ok) throw new Error(data.error || `Acción ${action} falló`);
+  return data;
+}
+
+function saveCache() {
+  localStorage.setItem(CACHE_KEY, JSON.stringify({
+    teams: state.teams, games: state.games, groups: state.groups, ts: Date.now()
+  }));
+}
+
+function loadCache() {
+  try {
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY));
+    if (c?.teams?.length) {
+      state.teams = c.teams;
+      state.games = c.games || [];
+      state.groups = c.groups || [];
+      return true;
+    }
+  } catch (e) { /* ignore */ }
+  return false;
+}
+
+function migrateParticipants() {
+  state.participants.forEach(p => {
+    if (p.teamName) {
+      const slug = teamSlug(canonicalTeam(p.teamName));
+      if (!state.teams.find(t => t.id === p.teamId)) p.teamId = slug;
+    }
+  });
+  saveData();
+}
+
+async function syncData() {
+  const syncEl = document.getElementById('syncInfo');
+  try {
+    syncEl.innerHTML = '<span class="spin">🔄</span> Actualizando datos...';
+    const [allRes, standingsRes] = await Promise.all([
+      fetchWcup('all'),
+      fetchWcup('standings')
+    ]);
+    const matches = allRes.matches || [];
+    const standings = standingsRes.standings || {};
+    state.teams = buildTeamsFromData(matches, standings);
+    state.games = matches.map(convertMatch).sort((a, b) => a._datetime - b._datetime);
+    state.groups = buildGroupsFromStandings(standings);
+    migrateParticipants();
+    state.lastSync = new Date();
+    saveCache();
+    computeTeamStatus();
+    renderAll();
+    const time = state.lastSync.toLocaleTimeString('es');
+    syncEl.innerHTML = `✅ Actualizado a las ${time} · Próxima en 30s`;
+  } catch (e) {
+    console.error(e);
+    if (loadCache()) {
+      migrateParticipants();
+      computeTeamStatus();
+      renderAll();
+      syncEl.innerHTML = `⚠️ Sin conexión · Mostrando datos guardados (${state.games.length} partidos)`;
+    } else {
+      syncEl.innerHTML = `⚠️ Error de conexión: ${e.message}. Reintentando...`;
+    }
+  }
+}
+
+// ═══════════════════════════════════════════
+// LÓGICA DE ELIMINACIÓN
+// ═══════════════════════════════════════════
+function getTeamName(en) { return TEAM_ES[en] || en; }
+
+function getTeamById(id) {
+  const found = state.teams.find(t => t.id === String(id));
+  if (found) return found;
+  return state.teams.find(t => teamSlug(t.name_en) === teamSlug(String(id)));
+}
+
+function isGroupStageComplete() {
+  const groupGames = state.games.filter(g => g.type === 'group');
+  return groupGames.length > 0 && groupGames.every(g => g.finished === 'TRUE');
+}
+
+function getQualifiedTeams() {
+  const qualified = new Set();
+  const thirdPlaces = [];
+
+  state.groups.forEach(group => {
+    const sorted = [...group.teams].sort((a, b) => {
+      const pts = parseInt(b.pts) - parseInt(a.pts);
+      if (pts !== 0) return pts;
+      const gd = parseInt(b.gd) - parseInt(a.gd);
+      if (gd !== 0) return gd;
+      return parseInt(b.gf) - parseInt(a.gf);
+    });
+    if (sorted[0]) qualified.add(sorted[0].team_id);
+    if (sorted[1]) qualified.add(sorted[1].team_id);
+    if (sorted[2]) thirdPlaces.push({ ...sorted[2], group: group.name });
+  });
+
+  thirdPlaces.sort((a, b) => {
+    const pts = parseInt(b.pts) - parseInt(a.pts);
+    if (pts !== 0) return pts;
+    const gd = parseInt(b.gd) - parseInt(a.gd);
+    if (gd !== 0) return gd;
+    return parseInt(b.gf) - parseInt(a.gf);
+  });
+  thirdPlaces.slice(0, 8).forEach(t => qualified.add(t.team_id));
+  return qualified;
+}
+
+function getKnockoutLosers() {
+  const losers = new Set();
+  const knockoutTypes = ['r32','r16','qf','sf','third','final'];
+  state.games.filter(g => knockoutTypes.includes(g.type) && g.finished === 'TRUE').forEach(g => {
+    const hs = parseInt(g.home_score), as = parseInt(g.away_score);
+    if (hs > as && g.home_team_id !== '0') losers.add(g.away_team_id);
+    else if (as > hs && g.away_team_id !== '0') losers.add(g.home_team_id);
+    else if (hs === as) {
+      // Penales no en API, asumimos ganador por score
+    }
+  });
+  return losers;
+}
+
+function getTeamCurrentStage(teamId) {
+  const tid = String(teamId);
+  const knockoutTypes = ['final','sf','qf','r16','r32'];
+  for (const type of knockoutTypes) {
+    const match = state.games.find(g =>
+      g.type === type && g.finished === 'TRUE' &&
+      (g.home_team_id === tid || g.away_team_id === tid)
+    );
+    if (match) {
+      const hs = parseInt(match.home_score), as = parseInt(match.away_score);
+      const won = (match.home_team_id === tid && hs > as) || (match.away_team_id === tid && as > hs);
+      if (!won) return { stage: type, eliminated: true };
+      if (type === 'final') return { stage: 'champion', eliminated: false };
+      return { stage: type, eliminated: false };
+    }
+  }
+  if (isGroupStageComplete()) {
+    const qualified = getQualifiedTeams();
+    if (qualified.has(tid)) return { stage: 'r32', eliminated: false };
+    return { stage: 'group', eliminated: true };
+  }
+  return { stage: 'group', eliminated: false };
+}
+
+function computeTeamStatus() {
+  state.teamStatus = {};
+  state.teams.forEach(t => {
+    state.teamStatus[t.id] = getTeamCurrentStage(t.id);
+  });
+}
+
+function resolveTeamId(p) {
+  if (state.teamStatus[p.teamId]) return p.teamId;
+  if (p.teamName) return teamSlug(canonicalTeam(p.teamName));
+  return p.teamId;
+}
+
+function getParticipantStatus(p) {
+  const tid = resolveTeamId(p);
+  const ts = state.teamStatus[tid] || { stage: 'group', eliminated: false };
+  return {
+    active: !ts.eliminated,
+    stage: ts.eliminated ? 'eliminated' : ts.stage,
+    stageLabel: ts.eliminated ? STAGE_LABELS.eliminated : (STAGE_LABELS[ts.stage] || ts.stage),
+    stageOrder: ts.eliminated ? -1 : (STAGE_ORDER[ts.stage] ?? 0)
+  };
+}
+
+// ═══════════════════════════════════════════
+// MATCH STATUS
+// ═══════════════════════════════════════════
+function getMatchStatus(game) {
+  if (game.finished === 'TRUE') return { cls: 'finished', label: 'Finalizado' };
+  const te = (game.time_elapsed || '').toLowerCase();
+  if (['live','1h','2h','ht','et','p','firsthalf','secondhalf','halftime'].some(s => te.includes(s)) && te !== 'notstarted') {
+    const min = te.match(/\d+/) ? te : '';
+    return { cls: 'live', label: min ? `En vivo ${min}'` : '🔴 EN VIVO' };
+  }
+  return { cls: 'scheduled', label: 'Por jugar' };
+}
+
+function getMatchTeams(game) {
+  if (game.home_team_name_en) {
+    return {
+      home: { name: getTeamName(game.home_team_name_en), flag: getFlag(game.home_team_id) },
+      away: { name: getTeamName(game.away_team_name_en), flag: getFlag(game.away_team_id) }
+    };
+  }
+  return {
+    home: { name: game.home_team_label || 'TBD', flag: null },
+    away: { name: game.away_team_label || 'TBD', flag: null }
+  };
+}
+
+function getFlag(teamId) {
+  const team = getTeamById(teamId);
+  return team ? team.flag : null;
+}
+
+function getPhaseLabel(type) {
+  const map = { group:'Grupo', r32:'Dieciseisavos', r16:'Octavos', qf:'Cuartos', sf:'Semifinal', third:'3er Puesto', final:'Final' };
+  return map[type] || type;
+}
+
+// ═══════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════
+function renderAll() {
+  renderPhaseFilter();
+  renderMatches();
+  renderRankings();
+  renderGroups();
+  renderStats();
+}
+
+function renderStats() {
+  const statuses = state.participants.map(p => getParticipantStatus(p));
+  const active = statuses.filter(s => s.active).length;
+  const eliminated = statuses.filter(s => !s.active).length;
+  const points = state.participants.filter((p, i) => statuses[i].active).reduce((s, p) => s + p.points, 0);
+  const liveGames = state.games.filter(g => getMatchStatus(g).cls === 'live').length;
+
+  document.getElementById('statActive').textContent = active;
+  document.getElementById('statEliminated').textContent = eliminated;
+  document.getElementById('statPoints').textContent = points;
+  document.getElementById('statLive').textContent = liveGames;
+
+  const liveInd = document.getElementById('liveIndicator');
+  if (liveGames > 0) {
+    liveInd.style.display = 'inline-flex';
+    document.getElementById('liveCount').textContent = `${liveGames} partido${liveGames>1?'s':''} en vivo`;
+  } else {
+    liveInd.style.display = 'none';
+  }
+}
+
+function renderPhaseFilter() {
+  const el = document.getElementById('phaseFilter');
+  el.innerHTML = PHASES.map(p =>
+    `<button class="phase-chip ${state.activePhase===p.id?'active':''}" onclick="setPhase('${p.id}')">${p.label}</button>`
+  ).join('');
+}
+
+function setPhase(id) {
+  state.activePhase = id;
+  renderPhaseFilter();
+  renderMatches();
+}
+
+function renderMatches() {
+  const el = document.getElementById('matchesList');
+  let games = [...state.games];
+  if (state.activePhase !== 'all') {
+    games = games.filter(g => g.type === state.activePhase || (state.activePhase === 'final' && g.type === 'final'));
+  }
+
+  games.sort((a, b) => {
+    const aLive = getMatchStatus(a).cls === 'live' ? 0 : 1;
+    const bLive = getMatchStatus(b).cls === 'live' ? 0 : 1;
+    if (aLive !== bLive) return aLive - bLive;
+    return (a._datetime || 0) - (b._datetime || 0);
+  });
+
+  if (!games.length) {
+    el.innerHTML = '<div class="empty-state"><div class="icon">⚽</div><p>No hay partidos en esta fase</p></div>';
+    return;
+  }
+
+  el.innerHTML = games.map(g => {
+    const teams = getMatchTeams(g);
+    const status = getMatchStatus(g);
+    const isLive = status.cls === 'live';
+    const isFinished = status.cls === 'finished';
+    const score = isFinished || isLive
+      ? `${g.home_score} - ${g.away_score}`
+      : 'vs';
+    const date = g.local_date ? g.local_date.split(' ')[0] : '';
+    const time = g.local_date ? g.local_date.split(' ')[1] : '';
+    const flagH = teams.home.flag ? `<img class="team-flag" src="${teams.home.flag}" alt="">` : '<span style="width:32px"></span>';
+    const flagA = teams.away.flag ? `<img class="team-flag" src="${teams.away.flag}" alt="">` : '<span style="width:32px"></span>';
+
+    return `<div class="match-card ${status.cls}">
+      <div class="team-side home">${flagH}<span class="team-name">${teams.home.name}</span></div>
+      <div class="match-center">
+        <div class="match-score">${score}</div>
+        <div class="match-status ${status.cls}">${status.label}</div>
+        <div class="match-meta">${getPhaseLabel(g.type)}${g.group && g.type==='group'?' · Grupo '+g.group:''} · ${date} ${time}</div>
+      </div>
+      <div class="team-side away">${flagA}<span class="team-name">${teams.away.name}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function renderRankings() {
+  const enriched = state.participants.map(p => {
+    const ps = getParticipantStatus(p);
+    const team = getTeamById(p.teamId);
+    return { ...p, ...ps, flag: team?.flag, teamNameEs: getTeamName(p.teamName) };
+  });
+
+  const active = enriched.filter(p => p.active).sort((a, b) => {
+    if (b.stageOrder !== a.stageOrder) return b.stageOrder - a.stageOrder;
+    return b.points - a.points;
+  });
+  const eliminated = enriched.filter(p => !p.active).sort((a, b) => {
+    if (b.stageOrder !== a.stageOrder) return b.stageOrder - a.stageOrder;
+    return b.points - a.points;
+  });
+
+  document.getElementById('activeCount').textContent = active.length;
+  document.getElementById('eliminatedCount').textContent = eliminated.length;
+
+  document.getElementById('activeRanking').innerHTML = active.length
+    ? active.map((p, i) => rankItemHTML(p, i + 1, false)).join('')
+    : '<div class="empty-state"><div class="icon">🏟️</div><p>Nadie en concurso aún.<br>El admin debe registrar participantes.</p></div>';
+
+  document.getElementById('eliminatedRanking').innerHTML = eliminated.length
+    ? eliminated.map((p, i) => rankItemHTML(p, i + 1, true)).join('')
+    : '<div class="empty-state"><div class="icon">✨</div><p>Nadie eliminado todavía.<br>¡Todos siguen en la pelea!</p></div>';
+}
+
+function rankItemHTML(p, pos, isElim) {
+  const topClass = !isElim && pos <= 3 ? `top${pos}` : '';
+  const flag = p.flag ? `<img src="${p.flag}" alt="">` : '';
+  return `<div class="rank-item ${topClass}">
+    <div class="rank-pos">${pos}</div>
+    <div class="rank-info">
+      <div class="name">${p.name}</div>
+      <div class="team">${flag} ${p.teamNameEs}</div>
+    </div>
+    <span class="rank-stage ${isElim ? 'eliminated' : ''}">${p.stageLabel}</span>
+    <div class="rank-points">${p.points}<small>pts</small></div>
+  </div>`;
+}
+
+function renderGroups() {
+  const el = document.getElementById('groupsGrid');
+  const qualified = isGroupStageComplete() ? getQualifiedTeams() : null;
+
+  const sorted = [...state.groups].sort((a, b) => a.name.localeCompare(b.name));
+
+  el.innerHTML = sorted.map(group => {
+    const teams = [...group.teams].sort((a, b) => parseInt(b.pts) - parseInt(a.pts));
+    const rows = teams.map(t => {
+      const team = getTeamById(t.team_id);
+      const isQual = qualified && qualified.has(t.team_id);
+      const flag = team ? `<img src="${team.flag}" style="width:18px;height:12px;border-radius:2px">` : '';
+      return `<div class="group-row ${isQual?'qualified':''}">
+        <span>${flag}</span>
+        <span style="font-weight:500">${team ? getTeamName(team.name_en) : '?'}</span>
+        <span>${t.mp}</span><span>${t.w}</span><span>${t.d}</span><span style="font-weight:700;color:var(--gold)">${t.pts}</span>
+      </div>`;
+    }).join('');
+
+    return `<div class="group-card">
+      <div class="group-header">Grupo ${group.name}</div>
+      <div class="group-row header"><span></span><span>Equipo</span><span>PJ</span><span>G</span><span>E</span><span>Pts</span></div>
+      ${rows}
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+// ADMIN
+// ═══════════════════════════════════════════
+function openAdmin() {
+  document.getElementById('adminModal').classList.add('open');
+  if (state.isAdmin) showAdminPanel();
+}
+
+function closeAdmin() {
+  document.getElementById('adminModal').classList.remove('open');
+}
+
+function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+
+  if (user === state.admin.user && pass === state.admin.pass) {
+    state.isAdmin = true;
+    sessionStorage.setItem('polla_admin', '1');
+    errEl.classList.add('hidden');
+    showAdminPanel();
+  } else {
+    errEl.textContent = 'Usuario o contraseña incorrectos';
+    errEl.classList.remove('hidden');
+  }
+}
+
+function doLogout() {
+  state.isAdmin = false;
+  sessionStorage.removeItem('polla_admin');
+  document.getElementById('loginView').classList.remove('hidden');
+  document.getElementById('adminView').classList.add('hidden');
+}
+
+function showAdminPanel() {
+  document.getElementById('loginView').classList.add('hidden');
+  document.getElementById('adminView').classList.remove('hidden');
+  populateTeamSelect();
+  renderAdminList();
+}
+
+function populateTeamSelect() {
+  const sel = document.getElementById('pTeam');
+  const sorted = [...state.teams].sort((a, b) => getTeamName(a.name_en).localeCompare(getTeamName(b.name_en)));
+  sel.innerHTML = sorted.map(t =>
+    `<option value="${t.id}">${getTeamName(t.name_en)} (Grupo ${t.groups})</option>`
+  ).join('');
+}
+
+function addParticipant() {
+  const name = document.getElementById('pName').value.trim();
+  const teamId = document.getElementById('pTeam').value;
+  const points = parseInt(document.getElementById('pPoints').value) || 0;
+  const successEl = document.getElementById('addSuccess');
+
+  if (!name) { successEl.textContent = 'Ingresa un nombre'; successEl.className = 'error-msg'; return; }
+  if (points < 1) { successEl.textContent = 'Los puntos deben ser al menos 1'; successEl.className = 'error-msg'; return; }
+
+  const team = getTeamById(teamId);
+  state.participants.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2),
+    name,
+    teamId,
+    teamName: team.name_en,
+    points,
+    createdAt: Date.now()
+  });
+  saveData();
+  document.getElementById('pName').value = '';
+  document.getElementById('pPoints').value = '5';
+  successEl.textContent = `✅ ${name} agregado con ${points} pts a ${getTeamName(team.name_en)}`;
+  successEl.className = 'success-msg';
+  renderAdminList();
+  renderAll();
+}
+
+function removeParticipant(id) {
+  if (!confirm('¿Eliminar este participante?')) return;
+  state.participants = state.participants.filter(p => p.id !== id);
+  saveData();
+  renderAdminList();
+  renderAll();
+}
+
+function renderAdminList() {
+  const el = document.getElementById('adminList');
+  if (!state.participants.length) {
+    el.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">Sin participantes aún</p>';
+    return;
+  }
+  el.innerHTML = state.participants.map(p => {
+    const ps = getParticipantStatus(p);
+    return `<div class="admin-participant">
+      <div class="info">
+        <div class="pname">${p.name}</div>
+        <div class="pteam">${getTeamName(p.teamName)} · ${p.points} pts · ${ps.stageLabel}</div>
+      </div>
+      <button class="btn btn-danger" onclick="removeParticipant('${p.id}')">✕</button>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+loadData();
+if (sessionStorage.getItem('polla_admin')) state.isAdmin = true;
+
+syncData();
+setInterval(syncData, REFRESH_MS);
+
+document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('adminModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeAdmin(); });
+</script>
+</body>
+</html>
