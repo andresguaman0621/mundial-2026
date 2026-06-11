@@ -26,7 +26,10 @@ const games = computed(() => {
     const score = isFinished || isLive ? `${g.home_score} - ${g.away_score}` : 'vs';
     const date = g.local_date ? g.local_date.split(' ')[0] : '';
     const time = g.local_date ? g.local_date.split(' ')[1] : '';
-    const meta = `${getPhaseLabel(g.type)}${g.group && g.type === 'group' ? ' · Grupo ' + g.group : ''} · ${date} ${time}`;
+    const phaseText = g.type === 'group'
+      ? (g.group ? `Grupo ${g.group}` : 'Fase de grupos')
+      : getPhaseLabel(g.type);
+    const meta = `${phaseText} · ${date} ${time}`;
     const tbd = teams.home.placeholder || teams.away.placeholder;
     // Texto buscable: nombres en español (mostrados) + en inglés (de la API).
     const hay = normalizeText(

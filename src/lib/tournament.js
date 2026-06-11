@@ -75,9 +75,11 @@ export function normalizeText(str) {
 }
 
 export function parseScore(score) {
-  if (!score) return ['0', '0'];
-  const parts = String(score).split(/[-:–]/).map(s => s.trim());
-  return [parts[0] || '0', parts[1] || '0'];
+  // El marcador siempre son dos enteros. La API a veces usa coma como separador
+  // (p. ej. "1,0" en partidos en vivo) además de "-"/":"/"–"; extraemos los
+  // grupos de dígitos para evitar que se muestren como "1,0".
+  const nums = String(score ?? '').match(/\d+/g) || [];
+  return [nums[0] ?? '0', nums[1] ?? '0'];
 }
 
 export function mapRound(round) {
@@ -291,8 +293,9 @@ export function getMatchStatus(game) {
   if (game.finished === 'TRUE') return { cls: 'finished', label: 'Finalizado' };
   const te = (game.time_elapsed || '').toLowerCase();
   if (['live','1h','2h','ht','et','p','firsthalf','secondhalf','halftime'].some(s => te.includes(s)) && te !== 'notstarted') {
-    const min = te.match(/\d+/) ? te : '';
-    return { cls: 'live', label: min ? `En vivo ${min}'` : '🔴 EN VIVO' };
+    const m = te.match(/\d+/);
+    const min = m ? m[0] : '';
+    return { cls: 'live', label: min ? `🔴 EN VIVO ${min}'` : '🔴 EN VIVO' };
   }
   return { cls: 'scheduled', label: 'Por jugar' };
 }
