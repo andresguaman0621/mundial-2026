@@ -25,10 +25,10 @@ onMounted(() => {
 
 <template>
   <div class="pitch-pattern"></div>
-  <button class="admin-btn" @click="adminOpen = true">⚙️ Admin</button>
 
   <div class="container">
     <header>
+      <button class="admin-btn" @click="adminOpen = true">⚙️ Admin</button>
       <div class="logo">POLLA MUNDIAL 2026</div>
       <p class="subtitle">Apuesta por tu selección · El que más lejos llegue gana los puntos</p>
       <div v-if="liveGames > 0" class="live-badge">
